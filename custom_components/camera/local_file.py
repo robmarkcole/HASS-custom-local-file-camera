@@ -11,13 +11,13 @@ import os
 import voluptuous as vol
 
 from homeassistant.const import CONF_NAME
-from homeassistant.components.camera import Camera, PLATFORM_SCHEMA, DOMAIN
+from homeassistant.components.camera import (
+    Camera, PLATFORM_SCHEMA, DOMAIN)
 from homeassistant.helpers import config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
 CONF_FILE_PATH = 'file_path'
-
 DEFAULT_NAME = 'Local File'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
@@ -73,7 +73,10 @@ class LocalFile(Camera):
 
     def update_file_path(self, file_path):
         """Update the camera file path."""
-        self._file_path = file_path
+        if os.path.isfile(file_path):
+            self._file_path = file_path
+        else:
+            _LOGGER.warning("Invalid file_path: %s", file_path)
 
     @property
     def name(self):
