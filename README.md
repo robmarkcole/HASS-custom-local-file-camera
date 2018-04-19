@@ -14,15 +14,15 @@ the image at `file_path` will then be displayed if a valid file.
 Example automation when [folder_watcher](https://www.home-assistant.io/components/folder_watcher/) detects a new image, display it using the local_file camera:
 ```yaml
 - action:
-    data_template:
-      file_path: " {{ trigger.event.data.path }} "
-    entity_id: camera.local_file
-    service: camera.update_file_path
-  alias: Display new image
+  - data:
+      message: image updated
+    service: notify.pushbullet
+  alias: Updated image file
   condition: []
-  id: '1520092824633'
+  id: '1524081104601'
   trigger:
-  - event_data: {"event_type":"created"}
-    event_type: folder_watcher
+  - event_data:
+      event_type: update_file_path
+    event_type: camera
     platform: event
 ```

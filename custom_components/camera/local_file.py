@@ -77,8 +77,8 @@ class LocalFile(Camera):
             self._file_path = file_path
             self.hass.bus.fire(
                 DOMAIN, {
-                    'entity_id': self.entity_id,
                     "event_type": "update_file_path",
+                    'entity_id': self.entity_id,
                     'name': self._name,
                     "file_path": file_path,
                     })
