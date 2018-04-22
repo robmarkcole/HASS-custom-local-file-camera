@@ -6,6 +6,9 @@ from unittest import mock
 # https://bugs.python.org/issue23004
 from mock_open import MockOpen
 
+import homeassistant.components.camera as camera
+from homeassistant.components.camera.local_file import (
+    SERVICE_UPDATE_FILE_PATH)
 from homeassistant.setup import async_setup_component
 
 from tests.common import mock_registry
@@ -118,30 +121,32 @@ def test_camera_content_type(hass, aiohttp_client):
 
 
 @asyncio.coroutine
-def test_update_file_path_service(hass, aiohttp_client):
-    """Test the update_file_path service."""
+def test_update_file_path_service(hass):
+    """Test update_file_path service."""
+    mopen = mock.mock_open()
     mock_registry(hass)
 
     with mock.patch('os.path.isfile', mock.Mock(return_value=True)), \
             mock.patch('os.access', mock.Mock(return_value=True)):
         yield from async_setup_component(hass, 'camera', {
             'camera': {
-                'name': 'update_file_path',
+                'name': 'config_test',
                 'platform': 'local_file',
                 'file_path': 'mock.file',
             }})
 
-    client = yield from aiohttp_client(hass.http.app)
-
     m_open = MockOpen(read_data=b'hello')
     with mock.patch(
             'homeassistant.components.camera.local_file.open',
-            m_open, create=True
-    ):
-        resp = yield from client.get(
-                '/api/camera_proxy/camera.update_file_path')
+            m_open, create=True), \
+            mock.patch('os.path.isfile', mock.Mock(return_value=True)):
 
-    assert resp.status == 200
-    body = yield from resp.text()
-    assert body == 'hello'
-    assert False
+        data = {'entity_id': 'camera.local_file',
+                'file_path': '/img/test.jpg'}
+        hass.services.async_call(
+                camera.DOMAIN, SERVICE_UPDATE_FILE_PATH, data)
+        yield from hass.async_block_till_done()
+
+        mock_write = mopen().write
+
+        assert len(mock_write.mock_calls) == 1
