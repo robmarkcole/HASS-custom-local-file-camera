@@ -4,7 +4,6 @@ Camera that loads a picture from a local file.
 For more details about this platform, please refer to the documentation at
 https://home-assistant.io/components/camera.local_file/
 """
-import asyncio
 import logging
 import mimetypes
 import os
@@ -92,3 +91,12 @@ class LocalFile(Camera):
     def name(self):
         """Return the name of this camera."""
         return self._name
+
+    @property
+    def device_state_attributes(self):
+        """Return the camera state attributes."""
+        attr = {
+            'access_token': self.access_tokens[-1],
+            'file_path': self._file_path
+        }
+        return attr
