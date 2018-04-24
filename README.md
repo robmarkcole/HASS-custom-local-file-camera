@@ -1,7 +1,7 @@
 # HASS-custom-local-file-camera
 Place the `custom_components` folder in your configuration directory (or add its contents to an existing custom_components folder).
 
-Fork of the [local_file](https://www.home-assistant.io/components/camera.local_file/) camera adding the service `camera.update_file_path` which updates the image displayed by the camera. The service can be called using the `SERVICES` tool with:
+Fork of the [local_file](https://www.home-assistant.io/components/camera.local_file/) camera adding the service `camera.local_file_update_file_path` which updates the image displayed by the camera. The service can be called using the `SERVICES` tool with:
 ```
 {
   "entity_id": "camera.local_file",
