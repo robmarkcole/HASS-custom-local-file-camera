@@ -26,3 +26,5 @@ An example automation to display new images detected by the [folder_watcher](htt
     event_type: folder_watcher
     platform: event
 ```
+
+UPDATE: merged into HA in https://github.com/home-assistant/home-assistant/pull/13976
